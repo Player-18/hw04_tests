@@ -25,7 +25,7 @@ class PostCreateFormTests(TestCase):
         form = {
             'text': 'Тестовая группа',
         }
-        response = self.user_client.post(
+        self.user_client.post(
             reverse('new_post'),
             data=form,
             follow=True)
