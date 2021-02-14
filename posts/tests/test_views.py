@@ -1,6 +1,4 @@
 from django import forms
-from django.contrib.auth import get_user_model
-from django.http import response
 from django.test import Client, TestCase
 from django.urls import reverse
 
@@ -12,7 +10,6 @@ class ViewPageContextTest(TestCase):
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        
 
     def setUp(self):
         self.guest_client = Client()
@@ -20,26 +17,26 @@ class ViewPageContextTest(TestCase):
         self.user_1 = User.objects.create_user(username='user1')
         self.user_1_client = Client()
         self.user_1_client.force_login(self.user_1)
-        
+
         self.user_2 = User.objects.create_user(username='user2')
         self.user_2_client = Client()
         self.user_2_client.force_login(self.user_2)
 
         self.test_group_1 = Group.objects.create(
-            title = 'Тестовая группа',
-            slug = 'slug',
-            description = 'Тестовое описание',
+            title='Тестовая группа',
+            slug='slug',
+            description='Тестовое описание',
         )
         self.test_group_2 = Group.objects.create(
-            title = 'Тестовая группа 2',
-            slug = 'slug-2',
-            description = 'Тестовое описание 2',
+            title='Тестовая группа 2',
+            slug='slug-2',
+            description='Тестовое описание 2',
         )
 
         self.test_post = Post.objects.create(
-            text = 'Тестовый текст',
-            author = self.user_1,
-            group = self.test_group_1,
+            text='Тестовый текст',
+            author=self.user_1,
+            group=self.test_group_1,
         )
 
     def test_pages_uses_correct_template(self):
@@ -48,7 +45,7 @@ class ViewPageContextTest(TestCase):
         post_id = self.test_post.id
         templates_pages_names = {
             reverse('index'): 'index.html',
-            reverse('new_post'): 'new.html', 
+            reverse('new_post'): 'new.html',
             reverse('group_posts', args=['slug']): 'group.html',
             reverse('post_edit', args=[user, post_id]): 'new_post.html',
             reverse('about:author'): 'about/author.html',
@@ -83,7 +80,7 @@ class ViewPageContextTest(TestCase):
         for field, expected in fields.items():
             with self.subTest(field=field):
                 self.assertIsInstance(form.fields[field], expected)
-    
+
     def test_post_edit_context(self):
         url = reverse('post_edit', args=[self.user_1, self.test_post.id])
         response = self.user_1_client.get(url)
@@ -106,7 +103,7 @@ class ViewPageContextTest(TestCase):
         for field, expected in fields.items():
             with self.subTest(field=field):
                 self.assertIsInstance(form.fields[field], expected)
-    
+
     def test_profile_context(self):
         user = self.user_1
         url = reverse('profile', args=[user])
@@ -132,14 +129,15 @@ class ViewPageContextTest(TestCase):
         for key, val in context.items():
             with self.subTest(key=key):
                 self.assertEqual(response.context[key], val)
-    
+
     def test_group_post(self):
-        response = self.user_1_client.get(reverse('group_posts', args=['slug']))
+        response = self.user_1_client.get(
+            reverse('group_posts', args=['slug']))
         cont = self.test_post
         self.assertEqual(response.context['page'][0], cont)
-    
+
     def test_another_group_post(self):
-        response = self.user_1_client.get(reverse('group_posts', args=['slug-2']))
+        response = self.user_1_client.get(
+            reverse('group_posts', args=['slug-2']))
         cont = self.test_post
         self.assertIsNot(cont, response.context['page'])
-        

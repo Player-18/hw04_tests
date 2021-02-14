@@ -12,12 +12,12 @@ class PostCreateFormTests(TestCase):
         self.user_client.force_login(self.user)
 
         self.test_post = Post.objects.create(
-            text = 'Тестовый пост',
-            author = self.user,
+            text='Тестовый пост',
+            author=self.user,
         )
         self.test_group = Group.objects.create(
-            title = 'Тестовая группа',
-            slug = 'slug',
+            title='Тестовая группа',
+            slug='slug',
         )
 
     def test_add_new_post(self):
@@ -29,10 +29,10 @@ class PostCreateFormTests(TestCase):
             reverse('new_post'),
             data=form,
             follow=True)
-        
+
         cont = post_count + 1
         self.assertEqual(Post.objects.count(), cont)
-    
+
     def test_form_edit_post(self):
         form = {
             'group': self.test_group.id,

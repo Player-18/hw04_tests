@@ -15,21 +15,31 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='group',
             name='title',
-            field=models.CharField(help_text='Наименование группы', max_length=200, verbose_name='Группа'),
+            field=models.CharField(
+                help_text='Наименование группы',
+                max_length=200, verbose_name='Группа'),
         ),
         migrations.AlterField(
             model_name='post',
             name='author',
-            field=models.ForeignKey(help_text='Наименование автора', on_delete=django.db.models.deletion.CASCADE, related_name='posts', to=settings.AUTH_USER_MODEL, verbose_name='Автор'),
+            field=models.ForeignKey(
+                help_text='Наименование автора',
+                on_delete=django.db.models.deletion.CASCADE,
+                related_name='posts', to=settings.AUTH_USER_MODEL,
+                verbose_name='Автор'),
         ),
         migrations.AlterField(
             model_name='post',
             name='group',
-            field=models.ForeignKey(blank=True, help_text='Выберете группу', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='posts', to='posts.Group', verbose_name='Группа'),
+            field=models.ForeignKey(
+                blank=True, help_text='Выберете группу', null=True,
+                on_delete=django.db.models.deletion.SET_NULL,
+                related_name='posts', to='posts.Group', verbose_name='Группа'),
         ),
         migrations.AlterField(
             model_name='post',
             name='text',
-            field=models.TextField(help_text='Напишите текст', verbose_name='Текст'),
+            field=models.TextField(
+                help_text='Напишите текст', verbose_name='Текст'),
         ),
     ]

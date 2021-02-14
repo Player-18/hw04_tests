@@ -17,14 +17,14 @@ class UrlTest(TestCase):
         self.authorized_client_2.force_login(self.user_2)
 
         self.test_group = Group.objects.create(
-            title = "Тестова группа",
-            slug = "slag",
-            description = "Тестовое описание"
+            title="Тестова группа",
+            slug="slag",
+            description="Тестовое описание"
         )
         self.test_post = Post.objects.create(
-            text = "Тестовый пост",
-            author = self.user_1,
-            group = self.test_group
+            text="Тестовый пост",
+            author=self.user_1,
+            group=self.test_group
         )
     """Страницы c доступом для неавторизованного пользователя"""
     def test_urls_allowed_guests(self):
@@ -66,4 +66,3 @@ class UrlTest(TestCase):
             with self.subTest(url=url):
                 response = self.authorized_client_1.get(url)
                 self.assertEqual(response.status_code, 200)
-                
