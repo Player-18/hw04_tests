@@ -2,12 +2,8 @@
 {% block title %}Профиль пользователя: {{ author.username }} {% endblock %}
 {% block header %}Профиль пользователя: {{ author.username }} {% endblock %}
 {% block content %}
-<main role="main" class="container">
-        <div class="row">
-                <div class="col-md-3 mb-3 mt-1">
-                    <div class="card">
-                            <div class="card-body">
-                                    <div class="h2">
+
+{% include "includes/card_author.html" %}
                                         <!-- Имя автора -->
                                         {{ author.get_full_name }} 
                                     </div>
@@ -29,9 +25,7 @@
             <div class="col-md-9">
     
                 <!-- Пост -->  
-                    <div class="card mb-3 mt-1 shadow-sm">
-                            <div class="card-body">
-                                    <p class="card-text">
+                {% include "includes/card_post.html" %}
                                             <!-- Ссылка на страницу автора в атрибуте href; username автора в тексте ссылки -->
                                             <a href="/{{author.username}}"><strong class="d-block text-gray-dark">@{{ author.username }}</strong></a>
                                             <!-- Текст поста -->

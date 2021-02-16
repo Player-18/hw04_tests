@@ -29,12 +29,12 @@ class UrlTest(TestCase):
     """Страницы c доступом для неавторизованного пользователя"""
     def test_urls_allowed_guests(self):
         urls = [
-            reverse('index'),
-            reverse('about:author'),
-            reverse('about:tech'),
-            reverse('post', args=[self.user_1, self.test_post.id]),
-            reverse('group_posts', args=['slag']),
-            reverse('profile', args=[self.user_1]),
+            '',
+            '/about/author/',
+            '/about/tech/',
+            f'/{self.user_1}/{self.test_post.id}/',
+            '/group/slag/',
+            f'/{self.user_1}/',
         ]
 
         for url in urls:

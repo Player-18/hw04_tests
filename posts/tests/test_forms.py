@@ -23,7 +23,8 @@ class PostCreateFormTests(TestCase):
     def test_add_new_post(self):
         post_count = Post.objects.count()
         form = {
-            'text': 'Тестовая группа',
+            'text': 'Тестовая пост2',
+            'group': self.test_group.id,
         }
         self.user_client.post(
             reverse('new_post'),
