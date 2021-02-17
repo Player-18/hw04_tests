@@ -1,5 +1,4 @@
 from django.test import Client, TestCase
-from django.urls import reverse
 
 from posts.models import Group, Post, User
 
@@ -26,14 +25,15 @@ class UrlTest(TestCase):
             author=self.user_1,
             group=self.test_group
         )
-    """Страницы c доступом для неавторизованного пользователя"""
+
     def test_urls_allowed_guests(self):
+        """Страницы c доступом для неавторизованного пользователя"""
         urls = [
             '',
             '/about/author/',
             '/about/tech/',
             f'/{self.user_1}/{self.test_post.id}/',
-            '/group/slag/',
+            f'/group/{self.test_group.slug}/',
             f'/{self.user_1}/',
         ]
 
@@ -42,11 +42,11 @@ class UrlTest(TestCase):
                 response = self.guest_client.get(url)
                 self.assertEqual(response.status_code, 200)
 
-    """Страницы без доступа для неавторизованного пользователя"""
     def test_urls_forbidden_guests(self):
+        """Страницы без доступа для неавторизованного пользователя"""
         urls = [
-            reverse('new_post'),
-            reverse('post_edit', args=[self.user_1, self.test_post.id])
+            '/new/',
+            f'/{self.user_1}/{self.test_post.id}/edit/',
         ]
 
         for url in urls:
@@ -58,11 +58,33 @@ class UrlTest(TestCase):
     def test_urls_allowed_for_users(self):
         """Страницы для авторизованного пользователя."""
         urls = [
-            reverse('new_post'),
-            reverse('post_edit', args=[self.user_1, self.test_post.id]),
+            '/new/',
+            f'/{self.user_1}/{self.test_post.id}/edit/',
         ]
 
         for url in urls:
             with self.subTest(url=url):
                 response = self.authorized_client_1.get(url)
                 self.assertEqual(response.status_code, 200)
+
+    def test_url_forbidden_for_another_users(self):
+        """Редирект если пользователь не автор поста"""
+        url = f'/{self.user_1}/{self.test_post.id}/edit/'
+        response = self.authorized_client_2.get(url, follow=True)
+        redir = f'/{self.user_1}/{self.test_post.id}/'
+        self.assertRedirects(response, redir)
+
+    def test_urls_uses_correct_template(self):
+        """URL-адрес использует соответствующий шаблон."""
+        templates_url_names = {
+            'index.html': '/',
+            "group.html": f'/group/{self.test_group.slug}/',
+            'new.html': '/new/',
+            'profile.html': f'/{self.user_1}/',
+            'post.html': f'/{self.user_1}/{self.test_post.id}/',
+            'new_post.html': f'/{self.user_1}/{self.test_post.id}/edit/',
+        }
+        for template, reverse_name in templates_url_names.items():
+            with self.subTest():
+                response = self.authorized_client_1.get(reverse_name)
+                self.assertTemplateUsed(response, template)
