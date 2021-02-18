@@ -60,10 +60,17 @@ def profile(request, username):
 
 
 def post_view(request, username, post_id):
+    user = get_object_or_404(User, username=username)
     post = get_object_or_404(Post, author__username=username, id=post_id)
+    posts = user.posts.all()
+    paginator = Paginator(posts, 10)
+    page_number = request.GET.get('page')
+    page = paginator.get_page(page_number)
     context = {
+        "page": page,
         "post": post,
         "author": post.author,
+        "paginator": paginator,
     }
 
     return render(request, 'post.html', context)

@@ -46,7 +46,8 @@ class ViewPageContextTest(TestCase):
         templates_pages_names = {
             reverse('index'): 'index.html',
             reverse('new_post'): 'new.html',
-            reverse('group_posts', args=['slug']): 'group.html',
+            reverse('group_posts',
+                    args=[self.test_group_1.slug]): 'group.html',
             reverse('post_edit', args=[user, post_id]): 'new_post.html',
             reverse('about:author'): 'about/author.html',
             reverse('about:tech'): 'about/tech.html',
@@ -63,7 +64,7 @@ class ViewPageContextTest(TestCase):
         self.assertEqual(response.context['page'][0], cont)
 
     def test_group_context(self):
-        url = reverse("group_posts", args=["slug"])
+        url = reverse("group_posts", args=[self.test_group_1.slug])
         response = self.user_1_client.get(url)
         cont = self.test_group_1
         self.assertEqual(response.context['group'], cont)
@@ -105,12 +106,11 @@ class ViewPageContextTest(TestCase):
                 self.assertIsInstance(form.fields[field], expected)
 
     def test_profile_context(self):
-        user = self.user_1
-        url = reverse('profile', args=[user])
+        url = reverse('profile', args=[self.user_1])
         response = self.user_1_client.get(url)
 
         context = {
-            'author': user
+            'author': self.user_1
         }
 
         for key, val in context.items():
@@ -132,12 +132,12 @@ class ViewPageContextTest(TestCase):
 
     def test_group_post(self):
         response = self.user_1_client.get(
-            reverse('group_posts', args=['slug']))
+            reverse('group_posts', args=[self.test_group_1.slug]))
         cont = self.test_post
         self.assertEqual(response.context['page'][0], cont)
 
     def test_another_group_post(self):
         response = self.user_1_client.get(
-            reverse('group_posts', args=['slug-2']))
+            reverse('group_posts', args=[self.test_group_2.slug]))
         cont = self.test_post
         self.assertIsNot(cont, response.context['page'])
